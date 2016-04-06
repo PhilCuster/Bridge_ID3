@@ -1,5 +1,9 @@
 package com.Custer;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,12 +36,76 @@ public class Main {
 
 
         // Read from a file and generate the example set.
+        String inFile = "bridge_in.txt";
+        String line = null;
 
+        ArrayList<Entry> example_set = new ArrayList<>();
 
+        try {
+            System.out.println("Reading " + inFile + "...");
+
+            BufferedReader in = new BufferedReader(new FileReader(inFile));
+
+            while ((line = in.readLine()) != null) {
+                // System.out.println(line);
+                Entry tempEntry = new Entry();
+                String[] split_line = line.split(",");
+
+                tempEntry.addValue("RIVER", split_line[1]);
+                tempEntry.addValue("LOCATION", split_line[2]);
+                tempEntry.addValue("ERECTED", split_line[3]);
+                tempEntry.addValue("PURPOSE", split_line[4]);
+                tempEntry.addValue("LENGTH", split_line[5]);
+                tempEntry.addValue("LANES", split_line[6]);
+                tempEntry.addValue("CLEAR-G", split_line[7]);
+                tempEntry.addValue("T-OR-D", split_line[8]);
+                tempEntry.addValue("MATERIAL", split_line[9]);
+                tempEntry.addValue("SPAN", split_line[10]);
+                tempEntry.addValue("REL-L", split_line[11]);
+                tempEntry.addValue("TYPE", split_line[12]);
+
+                example_set.add(tempEntry);
+            }
+
+            in.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Cannot open file: " + inFile);
+            return;
+        } catch (IOException e) {
+            System.out.println("IO Error...");
+            return;
+        }
+
+        inFile = "bridge_out.txt";
+
+        try {
+            System.out.println("Reading " + inFile + "...");
+            BufferedReader in = new BufferedReader(new FileReader(inFile));
+            int count = 0;
+            while ((line = in.readLine()) != null) {
+                line = line.replace("\n", "");
+                example_set.get(count).setClassification(line);
+                count++;
+            }
+
+            in.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Cannot open file: " + inFile);
+            return;
+        } catch (IOException e) {
+            System.out.println("IO Error...");
+            return;
+        }
+
+        System.out.println("Input complete! Example set includes " + example_set.size() + " entries.");
+
+        System.out.println("Building tree...");
+        induceTree(example_set, properties);
+        System.out.println("Tree complete!");
 
     }
 
-    private Node induceTree(ArrayList<Entry> example_set, ArrayList<Property> properties) {
+    public static Node induceTree(ArrayList<Entry> example_set, ArrayList<Property> properties) {
         String x = checkClasses(example_set);
         if (!(x.equals("-"))) {
             return new Node(x, true);
@@ -53,13 +121,16 @@ public class Main {
             for (String value : currentProp.getValues()) {
                 Branch newBranch = new Branch(newNode, value);
                 newNode.addChild(newBranch);
-                newBranch.setChild(induceTree(generateSet(example_set, value, currentProp), properties));
+                ArrayList<Entry> tempSet = generateSet(example_set, value, currentProp);
+                if (!(tempSet.size() == 0)) {
+                    newBranch.setChild(induceTree(tempSet, properties));
+                }
             }
             return newNode;
         }
     }
 
-    private ArrayList<Entry> generateSet(ArrayList<Entry> example_set, String value, Property property) {
+    private static ArrayList<Entry> generateSet(ArrayList<Entry> example_set, String value, Property property) {
         ArrayList<Entry> partition = new ArrayList<>();
         for (Entry e : example_set) {
             String temp = e.getValue(property.getName());
@@ -70,7 +141,7 @@ public class Main {
         return partition;
     }
 
-    private String checkClasses(ArrayList<Entry> example_set) {
+    private static String checkClasses(ArrayList<Entry> example_set) {
         String temp = example_set.get(0).getClassification();
         for (int i = 1; i < example_set.size(); i++) {
             if (!(example_set.get(i).getClassification().equals(temp))) {
@@ -80,7 +151,7 @@ public class Main {
         return temp;
     }
 
-    private String mostCommonClass(ArrayList<Entry> example_set) {
+    private static String mostCommonClass(ArrayList<Entry> example_set) {
         HashMap<String, Integer> hm = new HashMap<>();
         for (int i = 0; i < example_set.size(); i++) {
             String temp = example_set.get(i).getClassification();

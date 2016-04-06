@@ -11,6 +11,14 @@ public class Entry {
         values = new HashMap<>();
     }
 
+    public Entry() {
+        values = new HashMap<>();
+    }
+
+    public void setClassification (String _classi) {
+        classification = _classi;
+    }
+
     public String getClassification() {
         return classification;
     }
