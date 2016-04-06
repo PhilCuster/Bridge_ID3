@@ -100,22 +100,22 @@ public class Main {
         System.out.println("Input complete! Example set includes " + example_set.size() + " entries.");
 
         System.out.println("Building tree...");
-        induceTree(example_set, properties);
+        induceTree(example_set, properties, 1);
         System.out.println("Tree complete!");
 
     }
 
-    public static Node induceTree(ArrayList<Entry> example_set, ArrayList<Property> properties) {
+    public static Node induceTree(ArrayList<Entry> example_set, ArrayList<Property> properties, int depth) {
         String x = checkClasses(example_set);
         if (!(x.equals("-"))) {
-            return new Node(x, true);
+            return new Node(x, true, depth);
         }
         else if (properties.size() == 0) {
-            return new Node(mostCommonClass(example_set), true);
+            return new Node(mostCommonClass(example_set), true, depth);
         }
         else {
             Property currentProp = properties.get(0);
-            Node newNode = new Node(currentProp.getName(), false);
+            Node newNode = new Node(currentProp.getName(), false, depth);
             properties.remove(0);
 
             for (String value : currentProp.getValues()) {
@@ -123,7 +123,7 @@ public class Main {
                 newNode.addChild(newBranch);
                 ArrayList<Entry> tempSet = generateSet(example_set, value, currentProp);
                 if (!(tempSet.size() == 0)) {
-                    newBranch.setChild(induceTree(tempSet, properties));
+                    newBranch.setChild(induceTree(tempSet, properties, depth++));
                 }
             }
             return newNode;
