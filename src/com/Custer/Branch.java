@@ -17,11 +17,11 @@ public class Branch {
         return name;
     }
 
-    public Node getParent() {
-        return parent;
-    }
-
     public void setChild(Node _child) {
         child = _child;
+    }
+
+    public Node getChild() {
+        return child;
     }
 }

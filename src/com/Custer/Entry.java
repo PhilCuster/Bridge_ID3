@@ -5,11 +5,7 @@ import java.util.HashMap;
 public class Entry {
     private String classification;
     HashMap<String, String> values;
-
-    public Entry(String _class) {
-        classification = _class;
-        values = new HashMap<>();
-    }
+    private String name;
 
     public Entry() {
         values = new HashMap<>();
@@ -29,6 +25,14 @@ public class Entry {
 
     public String getValue(String property) {
         return values.get(property);
+    }
+
+    public void setName(String _name) {
+        name = _name;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

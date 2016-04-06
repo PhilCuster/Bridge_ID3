@@ -104,9 +104,30 @@ public class Main {
         System.out.println("Input complete! Example set includes " + example_set.size() + " entries.");
 
         System.out.println("Building tree...");
-        induceTree(example_set, properties, 1);
+        Node startNode = induceTree(example_set, properties, 1);
         System.out.println("Created " + maxDepth + " levels...");
         System.out.println("Tree complete!");
+
+        if (args.length == 0) {
+            System.out.println("No input string given!!!");
+        } else {
+            Entry myEntry = new Entry();
+           String[] inputSplit = args[0].split(",");
+            myEntry.setName(inputSplit[0]);
+            myEntry.addValue("RIVER", inputSplit[1]);
+            myEntry.addValue("LOCATION", inputSplit[2]);
+            myEntry.addValue("ERECTED", inputSplit[3]);
+            myEntry.addValue("PURPOSE", inputSplit[4]);
+            myEntry.addValue("LENGTH", inputSplit[5]);
+            myEntry.addValue("LANES", inputSplit[6]);
+            myEntry.addValue("CLEAR-G", inputSplit[7]);
+            myEntry.addValue("T-OR-D", inputSplit[8]);
+            myEntry.addValue("MATERIAL", inputSplit[9]);
+            myEntry.addValue("SPAN", inputSplit[10]);
+            myEntry.addValue("REL-L", inputSplit[11]);
+            myEntry.addValue("TYPE", inputSplit[12]);
+            System.out.println("ID: " + myEntry.getName() + "  Class: " + checkTree(myEntry, startNode));
+        }
 
     }
 
@@ -138,6 +159,24 @@ public class Main {
                 }
             }
             return newNode;
+        }
+    }
+
+    public static String checkTree(Entry entry, Node root) {
+        Node currentNode = root;
+        // Check if the current node is terminal.
+        while(true) {
+            if (currentNode.isLeaf()) {
+                return currentNode.getClassification();
+            } else {
+                String currentProp = currentNode.getClassification();
+                String currentValue = entry.getValue(currentProp);
+                for (Branch b : currentNode.getChildren()) {
+                    if (b.getName().equals(currentValue)) {
+                        currentNode = b.getChild();
+                    }
+                }
+            }
         }
     }
 

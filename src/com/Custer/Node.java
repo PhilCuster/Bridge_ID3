@@ -20,15 +20,15 @@ public class Node {
         children.add(child);
     }
 
-    public void setParent(Branch _parent) {
-        _parent = parent;
-    }
-
     public boolean isLeaf() {
         return leaf;
     }
 
-    public int getLevel() {
-        return level;
+    public String getClassification() {
+        return classification;
+    }
+
+    public ArrayList<Branch> getChildren() {
+        return children;
     }
 }
