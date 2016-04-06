@@ -11,7 +11,11 @@ import java.util.Map;
 
 public class Main {
 
+    static int maxDepth;
+
     public static void main(String[] args) {
+
+        maxDepth = 0;
 
         // Building our library of properties.
         ArrayList<Property> properties = new ArrayList<>();
@@ -101,6 +105,7 @@ public class Main {
 
         System.out.println("Building tree...");
         induceTree(example_set, properties, 1);
+        System.out.println("Created " + maxDepth + " levels...");
         System.out.println("Tree complete!");
 
     }
@@ -108,9 +113,15 @@ public class Main {
     public static Node induceTree(ArrayList<Entry> example_set, ArrayList<Property> properties, int depth) {
         String x = checkClasses(example_set);
         if (!(x.equals("-"))) {
+            if (depth > maxDepth) {
+                maxDepth = depth;
+            }
             return new Node(x, true, depth);
         }
         else if (properties.size() == 0) {
+            if (depth > maxDepth) {
+                maxDepth = depth;
+            }
             return new Node(mostCommonClass(example_set), true, depth);
         }
         else {
